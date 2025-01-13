@@ -6,5 +6,5 @@
 CODEOWNERS export-ignore
 CHANGELOG.md export-ignore
 Makefile export-ignore
-phpunit.xml.dist export-ignore
+phpunit.xml export-ignore
 infection.json5 export-ignore

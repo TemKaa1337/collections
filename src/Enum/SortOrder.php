@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Temkaa\SimpleCollections\Enum;
+namespace Temkaa\Collections\Enum;
 
+/**
+ * @api
+ */
 enum SortOrder
 {
     case Asc;

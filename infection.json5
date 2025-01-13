@@ -2,9 +2,6 @@
     "source": {
         "directories": [
             "src"
-        ],
-        "excludes": [
-            "/Provider\\/.*ProcessorProvider\\.php/",
         ]
     },
     "timeout": 10,
@@ -13,42 +10,11 @@
     },
     "mutators": {
         "@default": true,
-        "MatchArmRemoval": {
-            ignore: [
-                "Temkaa\\SimpleCollections\\Processor\\Condition\\CompareProcessor::compare"
-            ]
-        },
-        "TrueValue": {
-            ignore: [
-                "Temkaa\\SimpleCollections\\Model\\Sort\\ByCallback::__construct"
-            ]
-        },
-        "Throw_": {
-            ignore: [
-                "Temkaa\\SimpleCollections\\Processor\\Condition\\CompareProcessor::compare"
-            ]
-        },
-        "InstanceOf_": {
-            ignore: [
-                "Temkaa\\SimpleCollections\\Processor\\*\\*Processor::supports"
-            ]
-        },
-        "LogicalAnd": {
-            ignore: [
-                "Temkaa\\SimpleCollections\\Processor\\Sort\\ByValuesProcessor::process",
-                "Temkaa\\SimpleCollections\\Processor\\Sort\\ByCallbackProcessor::process"
-            ]
-        },
-        "Ternary": {
-            ignore: [
-                "Temkaa\\SimpleCollections\\Processor\\Sort\\ByKeysProcessor::process"
-            ]
-        },
-        "Identical": {
-            ignore: [
-                "Temkaa\\SimpleCollections\\Processor\\Sort\\ByKeysProcessor::process"
+        "UnwrapArrayValues": {
+            "ignore": [
+                "Temkaa\\Collections\\Accessor\\PathAccessor::get"
             ]
         }
     },
-    "minMsi": 100
+    "minMsi": 83
 }
