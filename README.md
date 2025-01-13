@@ -5,19 +5,19 @@ Simple Collections
 
 ## Installation:
 ```composer
-composer require temkaa/simple-collections
+composer require temkaa/collections
 ```
 
 ## Quickstart
 ```php
 <?php declare(strict_types = 1);
 
-use SimpleCollections\Collection;
-use SimpleCollections\Enum\ComparisonOperator;
-use SimpleCollections\Enum\SortOrder;
-use SimpleCollections\Model\Condition\Compare;
-use SimpleCollections\Model\Condition\Exactly;
-use SimpleCollections\Model\Sort\ByField;
+use Temkaa\Collections\ArrayCollection;
+use Temkaa\Collections\Model\Sort;
+use Temkaa\Collections\Enum\SortOrder;
+use Temkaa\Collections\Filter\AndX;
+use Temkaa\Collections\Filter\Greater;
+use Temkaa\Collections\Filter\Less;
 
 class SomeClass
 {
@@ -31,11 +31,17 @@ class SomeClass
         ];
 
         var_dump(
-            (new Collection($products))->sort(new ByField('name', SortOrder::Desc))->toArray(),
-            (new Collection($products))
-                ->where(new Compare(field: 'name', operator: ComparisonOperator::GreaterThan, value: 2))
+            (new ArrayCollection($products))->sort(Sort::path(['name' => SortOrder::Asc, 'id' => SortOrder::Desc]))->toArray(),
+            (new ArrayCollection($products))
+                ->filter(
+                    new AndX(
+                        [
+                            Greater::path(path: 'id', value: 1),
+                            Less::path(path: 'id', value: 10),
+                        ]
+                    )
+                )
                 ->toArray(),
-            (new Collection($products))->where(new Exactly(field: 'id', value: 1))->toArray(),
         );
     }
 
@@ -44,8 +50,8 @@ class SomeClass
         $result = Database::all() // Some database query
         
         var_dump(
-            (new Collection($products))->unique()->toArray(),
-            (new Collection($products))
+            (new ArrayCollection($products))->unique(path: 'someField.0.value')->toArray(),
+            (new ArrayCollection($products))
                 ->map(static fn (object $element): int => $elment->getId())
                 ->toArray(),
         );
@@ -53,39 +59,39 @@ class SomeClass
 }
 ```  
 ## Functionality
-### add(mixed $value, int|string|null $key = null): void
+### addElement(mixed $value, mixed $key = null): self
 Adds a new element to collection.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection([]);
-$collection->add(value: 'value');
+$collection = new ArrayCollection([]);
+$collection->addElement(value: 'value');
 // or
-$collection = new Collection([]);
-$collection->add(value: 'value', key: 'key');
+$collection = new ArrayCollection([]);
+$collection->addElement(value: 'value', key: 'key');
 ```
-### chunk(int $size): CollectionInterface[]
+### chunk(int $size): list<CollectionInterface<int|string, mixed>>
 Chunks elements in collection by given size.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
+$collection = new ArrayCollection(['element1', 'element2']);
 $chunks = $collection->chunk(1);
 ```
 ### count(): int
 Returns count of elements in Collection.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
+$collection = new ArrayCollection(['element1', 'element2']);
 $count = $collection->count();
 ```
 ### each(callable $callback): CollectionInterface
 Executes provided callback on each collection element. If false is returned from callback, iteration stops.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection([$object1, $object2]);
+$collection = new ArrayCollection([$object1, $object2]);
 $collection->each(static function (object $element): bool {
     if ($element->getId() === 1) {
         return false;
@@ -96,63 +102,83 @@ $collection->each(static function (object $element): bool {
     return true;
 });
 ```
-### filter(callable $callback): CollectionInterface
+### filter(FilterInterface $filter): CollectionInterface
 Filters the collection with provided callback.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
+use Temkaa\Collections\Filter\Greater;
 
-$collection = new Collection([$object1, $object2]);
-$newCollection = $collection->filter(static function (object $element): bool => $element->getId() > 10);
+$collection = new ArrayCollection([$object1, $object2]);
+$newCollection = $collection->filter(Greater::path('property'). value: 10)->toArray();
 ```
-### first(): mixed
+### firstElement(): mixed
 Returns first element from collection, `null` if collection is empty. 
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
-$first = $collection->first();
+$collection = new ArrayCollection(['element1', 'element2']);
+$first = $collection->firstElement();
 ```
-### has(mixed $value): bool
-Returns true of element/key is found, false otherwise.
+### firstKey(): mixed
+Returns first key from collection, `null` if collection is empty.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
-$exists = $collection->has('element1'); // true
-// or
-$collection = new Collection(['key' => 'value']);
-$exists = $collection->has('key'); // true
+$collection = new ArrayCollection(['element1', 'element2']);
+$first = $collection->firstKey();
 ```
-### isEmpty(): bool
+### hasElement(mixed $value): bool
+Returns true if element is found, false otherwise.
+```php
+use Temkaa\Collections\ArrayCollection;
+
+$collection = new ArrayCollection(['element1', 'element2']);
+$exists = $collection->hasElement('element1'); // true
+// or
+$collection = new ArrayCollection(['key' => 'value']);
+$exists = $collection->hasElement('value'); // true
+```
+### hasKey(mixed $key): bool
+Returns true if key is found, false otherwise.
+```php
+use Temkaa\Collections\ArrayCollection;
+
+$collection = new ArrayCollection(['element1', 'element2']);
+$exists = $collection->hasKey(0); // true
+// or
+$collection = new ArrayCollection(['key' => 'value']);
+$exists = $collection->hasKey('key'); // true
+```
+### empty(): bool
 Returns true if collection is empty, false otherwise.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
-$isEmpty = $collection->isEmpty(); // false
+$collection = new ArrayCollection(['element1', 'element2']);
+$isEmpty = $collection->empty(); // false
 ```
-### isNotEmpty(): bool
-Opposite of `isEmpty` method. 
-```php
-use SimpleCollections\Collection;
-
-$collection = new Collection(['element1', 'element2']);
-$isNotEmpty = $collection->isNotEmpty(); // true
-```
-### last(): mixed
+### lastElement(): mixed
 Returns last element of collection, null if collection is empty.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
-$last = $collection->last();
+$collection = new ArrayCollection(['element1', 'element2']);
+$last = $collection->lastElement();
+```
+### lastKey(): mixed
+Returns last key of collection, null if collection is empty.
+```php
+use Temkaa\Collections\ArrayCollection;
+
+$collection = new ArrayCollection(['element1', 'element2']);
+$last = $collection->lastKey();
 ```
 ### map(callable $callback): Collection
 Creates new collection from provided callback.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
+$collection = new ArrayCollection(['element1', 'element2']);
 $mappedArray = $collection
     ->map(static fn (string $element): string => $element.'1')
     ->toArray(); // ['element11', 'element21']
@@ -160,156 +186,90 @@ $mappedArray = $collection
 ### merge(CollectionInterface $collection, bool $recursive = false): CollectionInterface
 Merges two collections with each other.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection1 = new Collection(['element1', 'element2']);
-$collection2 = new Collection(['element3', 'element4']);
+$collection1 = new ArrayCollection(['element1', 'element2']);
+$collection2 = new ArrayCollection(['element3', 'element4']);
 $resultArray = $collection1
     ->merge($collection2)
     ->toArray(); // ['element1', 'element2', 'element3', 'element4']
 // or
-$collection1 = new Collection(['a' => 'element1', 'b' => 'element2']);
-$collection2 = new Collection(['a' => 'element3', 'b' => 'element4']);
+$collection1 = new ArrayCollection(['a' => 'element1', 'b' => 'element2']);
+$collection2 = new ArrayCollection(['a' => 'element3', 'b' => 'element4']);
 $resultArray = $collection1
     ->merge($collection2, recursive: true)
     ->toArray(); // ['a' => ['element1', 'element3'], 'b' => ['element2', 'element4']]
 ```
-### remove(mixed $value): mixed
-Removes provided element from collection, if element does not exist returns null.
+### removeElement(mixed $value): self
+Removes provided element from collection or silently does nothing if element does not exist.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2']);
-$removedElement = $collection->remove('element1'); // element1
+$collection = new ArrayCollection(['element1', 'element2']);
+$collection->removeElement('element1');
 // or
-$collection = new Collection(['a' => 'element1', 'b' => 'element2']);
-$removedElement = $collection->remove('a'); // element1
+$collection = new ArrayCollection(['a' => 'element1', 'b' => 'element2']);
+$collection->removeElement('element1');
+```
+### removeKey(mixed $key): self
+Removes provided key from collection or silently does nothing if key does not exist.
+```php
+use Temkaa\Collections\ArrayCollection;
+
+$collection = new ArrayCollection(['element1', 'element2']);
+$collection->removeKey('element1');
+// or
+$collection = new ArrayCollection(['a' => 'element1', 'b' => 'element2']);
+$collection->removeKey('element1');
 ```
 ### slice(int $offset, ?int $length = null): CollectionInterface
 Slices collection from given offset with provided length. If length is not defined - gets all elements from given offset.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2', 'element3']);
+$collection = new ArrayCollection(['element1', 'element2', 'element3']);
 $slice = $collection->slice(offset: 1)->toArray(); // ['element2', 'element3']
 // or
-$collection = new Collection(['element1', 'element2', 'element3']);
-$slice = $collection->slice(offset: 1, limit: 0)->toArray(); // ['element2']
+$collection = new ArrayCollection(['element1', 'element2', 'element3']);
+$slice = $collection->slice(offset: 1, length: 1)->toArray(); // ['element2']
 ```
 ### toArray(): array
 Returns collection elements.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection(['element1', 'element2', 'element3']);
+$collection = new ArrayCollection(['element1', 'element2', 'element3']);
 $array = $collection->toArray(); // ['element1', 'element2', 'element3']
 ```
-### sort(SortCriteriaInterface $criteria): CollectionInterface
-Sorts collection by provided criteria.  
-Sorting by provided callback:
+### sort(Sort $sort): CollectionInterface
+Sorts collection by provided directions by path or just values if array is an array of scalars.
 ```php
-use SimpleCollections\Collection;
-use SimpleCollections\Model\Sort\ByCallback;
+use Temkaa\Collections\ArrayCollection;
+use Temkaa\Collections\Enum\SortOrder;
+use Temkaa\Collections\Model\Sort;
 
 $object1->setId(1);
 $object2->setId(2);
 $object3->setId(3);
 
-$collection = new Collection([$object3, $object2, $object1]);
+$collection = new ArrayCollection([$object3, $object2, $object1]);
 $sorted = $collection
-    ->sort(new ByCallback(static fn (object $element): int => $element->getId()))
-    ->toArray(); // [$object1, $object2, $object3]
-```
-Sorting by values:
-```php
-use SimpleCollections\Collection;
-use SimpleCollections\Enum\SortOrder;
-use SimpleCollections\Model\Sort\ByValues;
-
-$collection = new Collection([3, 2, 1]);
-$sorted = $collection->sort(new ByValues())->toArray(); // [1, 2, 3]
+    ->sort(Sort::path(directions: ['id' => SortOrder::DESC]))
+    ->toArray(); // [$object3, $object2, $object1]
 // or
-$collection = new Collection([1, 2, 3]);
-$sorted = $collection->sort(new ByValues(SortOrder::Desc))->toArray(); // 3, 2, 1]
-```
-Sorting by keys:
-```php
-use SimpleCollections\Collection;
-use SimpleCollections\Enum\SortOrder;
-use SimpleCollections\Model\Sort\ByKeys;
-
-$collection = new Collection(['c' => 8, 'b' => 9, 'a' => 10]);
-$sorted = $collection->sort(new ByKeys())->toArray(); // ['a' => 10, 'b' => 9, 'c' => 8]
-// or
-$collection = new Collection(['c' => 10, 'b' => 9, 'a' => 8]);
-$sorted = $collection->sort(new ByKeys(SortOrder::Desc))->toArray(); // ['c' => 10, 'b' => 9, 'a' => 8]
-```
-Sorting by field:
-```php
-use SimpleCollections\Collection;
-use SimpleCollections\Enum\SortOrder;
-use SimpleCollections\Model\Sort\ByField;
-
-$collection = new Collection([['field' => 10], ['field' => 5], []]);
-$sorted = $collection->sort(new ByField(field: 'field'))->toArray(); // [[], ['field' => 5], ['field' => 10]
-
-$collection = new Collection([['a' => 5], ['a' => 10], []]);
+$collection = new ArrayCollection([1, 2, 3, 4]);
 $sorted = $collection
-    ->sort(new ByField(field: 'field', order: SortOrder::Desc))
-    ->toArray(); [['a' => 10], ['a' => 5], []]
+    ->sort(Sort::value(SortOrder::Desc))
+    ->toArray(); // [4, 3, 2, 1]
 ```
-### sum(?SumCriteriaInterface $criteria = null): float|int
-Returns sum by provided criteria.  
-Sum by default:
+### unique(array|string|null $path = null): CollectionInterface
+Returns unique elements by provided path or just unique array by values.
 ```php
-use SimpleCollections\Collection;
+use Temkaa\Collections\ArrayCollection;
 
-$collection = new Collection([1.1, 2, 3]);
-$sum = $collection->sum(); // 6.1
-```
-Sum by field:
-```php
-use SimpleCollections\Collection;
-use SimpleCollections\Model\Sum\ByField;
-
-$collection = new Collection([['a' => 1], ['a' => 2]]);
-$sum = $collection->sum(new ByField(field: 'a')); // 3
-```
-### unique(?UniqueCriteriaInterface $criteria = null): CollectionInterface
-Returns unique elements by provided criteria.  
-Unique by default:
-```php
-use SimpleCollections\Collection;
-
-$collection = new Collection([1, 2]);
+$collection = new ArrayCollection([1, 2]);
 $unique = $collection->unique()->toArray(); // [1]
-```
-Unique by field:
-```php
-use SimpleCollections\Collection;
-use SimpleCollections\Model\Unique\ByField;
 
-$collection = new Collection([['a' => 1, 'b' => 2], ['a' => 1, 'b' => 3]]);
-$unique = $collection->unique(new ByField(field: 'a'))->toArray(); // [['a' => 1, 'b' => 2]]
-```
-### where(ConditionInterface $condition): CollectionInterface
-Returns filtered collection by provided condition.  
-Where with exact hit:
-```php
-use SimpleCollections\Collection;
-use SimpleCollections\Model\Condition\Exactly;
-
-$collection = new Collection([1, 2]);
-$compared = $collection->where(new Exactly(field: 'a', value: 1))->toArray(); // [1]
-```
-Where with comparison (full list of allowed comparison operators can be viewed in `SimpleCollections\Enum\ComparisonOperator`):
-```php
-use SimpleCollections\Collection;
-use SimpleCollections\Enum\ComparisonOperator;
-use SimpleCollections\Model\Condition\Compare;
-
-$collection = new Collection([1, 2, 3, 4, 5]);
-$compared = $collection
-    ->where(new Compare(field: 'a', operator: ComparisonOperator::In, value: [1, 2]))
-    ->toArray(); // [1, 2]
+$collection = new ArrayCollection([['a' => 1], ['a' => 1]]);
+$unique = $collection->unique(path: 'a')->toArray(); // ['a' => 1]
 ```

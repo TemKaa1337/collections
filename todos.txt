@@ -1,5 +1,0 @@
-1. add callable filter
-2. add callable sort
-3. add callable unique????
-4. update docs
-5. update examples
