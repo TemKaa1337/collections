@@ -2,8 +2,8 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="Temkaa\SimpleCollections\" />
-      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="false" packagePrefix="Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="Temkaa\Collections\" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/tests/Unit" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/recursion-context" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/complexity" />
@@ -38,7 +38,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/infection/extension-installer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/infection/include-interceptor" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/infection/infection" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/infection/mutator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/justinrainbow/json-schema" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ondram/ci-detector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
@@ -56,6 +55,13 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/service-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/string" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/thecodingmachine/safe" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pdepend/pdepend" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpmd/phpmd" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpstan" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/rregeer/phpunit-coverage-check" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/config" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/dependency-injection" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/var-exporter" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

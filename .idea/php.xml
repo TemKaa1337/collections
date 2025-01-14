@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="MessDetector">
+    <phpmd_settings>
+      <MessDetectorConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpmd" />
+      <phpmd_by_interpreter asDefaultInterpreter="true" interpreter_id="76383763-c300-44fa-96cd-cc3cb4c7b06f" tool_path="E:\MYPROJECTS\simple-projects\simple-collections\vendor\bin\phpmd" timeout="30000" />
+    </phpmd_settings>
+  </component>
   <component name="MessDetectorOptionsConfiguration">
+    <option name="codeSize" value="true" />
+    <option name="controversial" value="true" />
+    <option name="design" value="true" />
     <option name="transferred" value="true" />
   </component>
   <component name="PHPCSFixerOptionsConfiguration">
@@ -9,6 +18,11 @@
   <component name="PHPCodeSnifferOptionsConfiguration">
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
+  </component>
+  <component name="PhpCodeSniffer">
+    <phpcs_settings>
+      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="76383763-c300-44fa-96cd-cc3cb4c7b06f" timeout="30000" />
+    </phpcs_settings>
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
@@ -45,7 +59,6 @@
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/type-resolver" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-common" />
-      <path value="$PROJECT_DIR$/vendor/infection/mutator" />
       <path value="$PROJECT_DIR$/vendor/justinrainbow/json-schema" />
       <path value="$PROJECT_DIR$/vendor/infection/infection" />
       <path value="$PROJECT_DIR$/vendor/infection/include-interceptor" />
@@ -69,18 +82,41 @@
       <path value="$PROJECT_DIR$/vendor/sanmai/later" />
       <path value="$PROJECT_DIR$/vendor/sanmai/pipeline" />
       <path value="$PROJECT_DIR$/vendor/thecodingmachine/safe" />
+      <path value="$PROJECT_DIR$/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/vendor/phpmd/phpmd" />
+      <path value="$PROJECT_DIR$/vendor/pdepend/pdepend" />
+      <path value="$PROJECT_DIR$/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/vendor/symfony/var-exporter" />
+      <path value="$PROJECT_DIR$/vendor/symfony/dependency-injection" />
+      <path value="$PROJECT_DIR$/vendor/rregeer/phpunit-coverage-check" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
+  <component name="PhpStan">
+    <PhpStan_settings>
+      <PhpStanConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpstan" />
+      <phpstan_by_interpreter asDefaultInterpreter="true" interpreter_id="76383763-c300-44fa-96cd-cc3cb4c7b06f" tool_path="E:\MYPROJECTS\simple-projects\simple-collections\vendor\bin\phpstan" timeout="60000" />
+    </PhpStan_settings>
+  </component>
   <component name="PhpStanOptionsConfiguration">
+    <option name="config" value="$PROJECT_DIR$/phpstan.neon" />
     <option name="transferred" value="true" />
   </component>
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml.dist" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="$PROJECT_DIR$/vendor/bin/phpunit" use_configuration_file="true" />
+      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="$PROJECT_DIR$/vendor/bin/phpunit" use_configuration_file="true" />
     </phpunit_settings>
   </component>
+  <component name="Psalm">
+    <Psalm_settings>
+      <psalm_fixer_by_interpreter asDefaultInterpreter="true" interpreter_id="76383763-c300-44fa-96cd-cc3cb4c7b06f" timeout="60000" />
+    </Psalm_settings>
+  </component>
   <component name="PsalmOptionsConfiguration">
+    <option name="config" value="E:\MYPROJECTS\simple-projects\simple-collections\phpstan.neon" />
+    <option name="findUnusedCode" value="true" />
+    <option name="findUnusedSuppress" value="true" />
+    <option name="showInfo" value="true" />
     <option name="transferred" value="true" />
   </component>
 </project>

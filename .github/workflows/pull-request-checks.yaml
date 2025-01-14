@@ -1,4 +1,4 @@
-name: run-tests
+name: Run PR checks
 
 on:
   pull_request:
@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
 
       - name: Validate composer.json and composer.lock
         run: composer validate
@@ -21,8 +21,19 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress
 
-      - name: Run Unit tests
-        run: ./vendor/bin/phpunit --testsuite units
+      - name: Run PHPMD tests
+        run: composer phpmd
+
+      - name: Run PHPStan tests
+        run: composer phpstan
+
+      - name: Run test suite
+        run: ./vendor/bin/phpunit --testsuite units,integrations --coverage-clover clover.xml
+        env:
+          XDEBUG_MODE: coverage
+
+      - name: Code coverage test
+        run: ./vendor/bin/coverage-check clover.xml 79
 
       - name: Run Mutation tests
-        run: ./vendor/bin/infection --threads=2 --logger-github
+        run: ./vendor/bin/infection --configuration=infection.json5 --threads=4

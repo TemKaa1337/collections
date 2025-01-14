@@ -1,0 +1,10 @@
+parameters:
+	level: 10
+	paths:
+		- src
+
+	ignoreErrors:
+		- '#PHPDoc tag @SuppressWarnings has invalid value\.*#'
+
+	parallel:
+		maximumNumberOfProcesses: 2
